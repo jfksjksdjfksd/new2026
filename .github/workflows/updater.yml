@@ -5,16 +5,16 @@ on:
     - cron: '0 0 * * 0'
   workflow_dispatch:
 
-env:
 # =============================================
+env:
   RELEASE_TAG: latest-archive
   RELEASE_TITLE: Latest Archive Version
-  FILENAME_TEMPLATE: "rara_[date]_[qq][qq][qq].rar"
+  FILENAME_TEMPLATE: "aaaaa_[date]_[qq][qq][qq].rar"
   FILE_EXTENSION: "rar"
   REPO_ARCHIVE_FOLDER: "."
   TARGET_FILE: "LICENSE"
   TARGET_LINE_NUMBER: "5"
-  TARGET_LINE_TEMPLATE: "mydownload : {URL}"
+  TARGET_LINE_TEMPLATE: "link: {URL}"
 # =============================================
 
 jobs:
@@ -43,7 +43,6 @@ jobs:
           done
           
           echo "filename=$FILENAME" >> $GITHUB_OUTPUT
-          echo "Generated filename: $FILENAME"
 
       - name: Delete old archive from repo
         run: |
@@ -54,17 +53,15 @@ jobs:
           
           if [ -n "$OLD_FILES" ]; then
             echo "$OLD_FILES" | while read -r file; do
-              echo "Removing old archive: $file"
               rm -f "$file"
             done
-          else
-            echo "No old archives found"
           fi
 
       - name: Download archive
+        env:
+          ARCHIVE_URL: ${{ secrets.ARCHIVE_URL }}
         run: |
-          curl -fSL --retry 3 -o "${{ env.REPO_ARCHIVE_FOLDER }}/${{ steps.filename.outputs.filename }}" "${{ vars.ARCHIVE_URL }}"
-          ls -lh "${{ env.REPO_ARCHIVE_FOLDER }}/${{ steps.filename.outputs.filename }}"
+          curl -fSL --retry 3 -o "${{ env.REPO_ARCHIVE_FOLDER }}/${{ steps.filename.outputs.filename }}" "$ARCHIVE_URL"
 
       - name: Ensure release exists
         env:
@@ -84,7 +81,6 @@ jobs:
           if [ -n "$ASSETS" ]; then
             echo "$ASSETS" | while read -r asset; do
               if [ -n "$asset" ]; then
-                echo "Deleting: $asset"
                 gh release delete-asset ${{ env.RELEASE_TAG }} "$asset" --yes 2>/dev/null || true
               fi
             done
@@ -107,7 +103,6 @@ jobs:
           DOWNLOAD_URL="https://github.com/${{ github.repository }}/releases/download/${{ env.RELEASE_TAG }}/${{ steps.filename.outputs.filename }}"
           NEW_LINE=$(echo "${{ env.TARGET_LINE_TEMPLATE }}" | sed "s|{URL}|$DOWNLOAD_URL|g")
           sed -i "${{ env.TARGET_LINE_NUMBER }}s|.*|$NEW_LINE|" "${{ env.TARGET_FILE }}"
-          echo "Updated ${{ env.TARGET_FILE }} line ${{ env.TARGET_LINE_NUMBER }}: $NEW_LINE"
 
       - name: Commit changes
         env:
